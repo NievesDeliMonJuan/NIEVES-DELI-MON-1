@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -6,20 +6,25 @@
   <title>Recuerdos de Texto</title>
   <style>
     @media only screen and (max-width: 600px) {
-      /* Ajustar estilos para dispositivos móviles */
       input[type="text"] {
-        width: 80%;
+        width: 95%;
         margin-bottom: 10px;
       }
+    }
+    #cabecera {
+      background-color:blue;
+      text-align: center;
+    }
+    #cabecera p {
+      color: white; 
+      font-size: 32px; 
+      font-weight: bold;
     }
   </style>
   <script>
     function calcularDiferencias() {
-      // Obtener todos los elementos de texto
       var inputsLlenar = document.querySelectorAll('[placeholder^="Llenar"]');
       var inputsRegreso = document.querySelectorAll('[placeholder^="Regreso"]');
-
-      // Crear o actualizar la tabla
       var tabla = document.getElementById("tablaDiferencias");
       if (!tabla) {
         tabla = document.createElement("table");
@@ -27,119 +32,71 @@
 
         var encabezado = tabla.createTHead();
         var filaEncabezado = encabezado.insertRow();
-        var celdaNombre = filaEncabezado.insertCell();
-        var celdaLlenar = filaEncabezado.insertCell();
-        var celdaRegreso = filaEncabezado.insertCell();
-        var celdaDiferencia = filaEncabezado.insertCell();
-        var celdaPesos = filaEncabezado.insertCell();
-        celdaNombre.textContent = "Nombre";
-        celdaLlenar.textContent = "Llenar";
-        celdaRegreso.textContent = "Regreso";
-        celdaDiferencia.textContent = "Diferencia";
-        celdaPesos.textContent = "Pesos";
+        filaEncabezado.insertCell().textContent = "Nombre";
+        filaEncabezado.insertCell().textContent = "Llenar";
+        filaEncabezado.insertCell().textContent = "Regreso";
+        filaEncabezado.insertCell().textContent = "Diferencia";
+        filaEncabezado.insertCell().textContent = "Pesos";
       } else {
-        // Limpiar el contenido de la tabla
         tabla.innerHTML = "";
       }
-
       var sumaPesos = 0;
-
-      // Calcular e insertar las diferencias y pesos en la tabla
       for (var i = 0; i < inputsLlenar.length; i++) {
         var diferencia = parseInt(inputsLlenar[i].value) - parseInt(inputsRegreso[i].value);
         var pesos = 0;
-
-        // Calcular pesos según el nombre y los nuevos precios
         switch (inputsLlenar[i].placeholder.replace("Llenar ", "")) {
-          case "10":
-            pesos = diferencia * 10;
-            break;
-          case "15":
-            pesos = diferencia * 15;
-            break;
-          case "20":
-            pesos = diferencia * 20;
-            break;
-          case "medio":
-            pesos = diferencia * 30; // Nuevo precio
-            break;
-          case "litro":
-            pesos = diferencia * 50; // Nuevo precio
-            break;
-          case "cono":
-            pesos = diferencia * 10; // Nuevo precio
-            break;
+          case "10": pesos = diferencia * 10; break;
+          case "15": pesos = diferencia * 15; break;
+          case "medio": pesos = diferencia * 35; break;
+          case "litro": pesos = diferencia * 60; break;
+          case "cono": pesos = diferencia * 15; break;
         }
-
         sumaPesos += pesos;
-
         var fila = tabla.insertRow();
-        var celdaNombre = fila.insertCell();
-        var celdaLlenar = fila.insertCell();
-        var celdaRegreso = fila.insertCell();
-        var celdaDiferencia = fila.insertCell();
-        var celdaPesos = fila.insertCell();
-        celdaNombre.textContent = inputsLlenar[i].placeholder.replace("Llenar ", "");
-        celdaLlenar.textContent = inputsLlenar[i].value;
-        celdaRegreso.textContent = inputsRegreso[i].value;
-        celdaDiferencia.textContent = diferencia;
-        celdaPesos.textContent = pesos;
+        fila.insertCell().textContent = inputsLlenar[i].placeholder.replace("Llenar ", "");
+        fila.insertCell().textContent = inputsLlenar[i].value;
+        fila.insertCell().textContent = inputsRegreso[i].value;
+        fila.insertCell().textContent = diferencia;
+        fila.insertCell().textContent = pesos;
       }
-
-      // Agregar una fila al final de la tabla con la suma de la columna "Pesos"
       var filaSuma = tabla.insertRow();
-      var celdaSuma = filaSuma.insertCell();
-      celdaSuma.colSpan = 3; // Hacer que la celda de la suma ocupe tres columnas
-      celdaSuma.textContent = "Suma de Pesos:";
-      var celdaTotalPesos = filaSuma.insertCell();
-      celdaTotalPesos.textContent = sumaPesos;
-
-      // Añadir la tabla al cuerpo del documento
+      filaSuma.insertCell().colSpan = 3;
+      filaSuma.insertCell().textContent = "Suma de Pesos:";
+      filaSuma.insertCell().textContent = sumaPesos;
       document.body.appendChild(tabla);
     }
 
     function crearRecuerdo(nombre) {
-      // Crear el contenedor div para cada par de campos
       var divContainer = document.createElement("div");
-
-      // Crear el elemento de texto para llenar
       var inputLlenar = document.createElement("input");
       inputLlenar.type = "text";
       inputLlenar.placeholder = "Llenar " + nombre;
-      inputLlenar.inputMode = "numeric"; // Mostrar teclado numérico en dispositivos móviles
-
-      // Crear el elemento de texto para regreso
+      inputLlenar.inputMode = "numeric";
+      
       var inputRegreso = document.createElement("input");
       inputRegreso.type = "text";
       inputRegreso.placeholder = "Regreso " + nombre;
-      inputRegreso.inputMode = "numeric"; // Mostrar teclado numérico en dispositivos móviles
-
-      // Añadir elementos al contenedor div
+      inputRegreso.inputMode = "numeric";
+      
       divContainer.appendChild(inputLlenar);
+      divContainer.appendChild(document.createElement("br"));
       divContainer.appendChild(inputRegreso);
-
-      // Añadir el contenedor div al cuerpo del documento
+      divContainer.appendChild(document.createElement("br"));
       document.body.appendChild(divContainer);
     }
   </script>
 </head>
 <body>
 
-<div id="cabecera" style="background-color: red; text-align: center;">
-  <p style="color: white; font-size: 24px; font-weight: bold;">NIEVES DON JUAN</p>
+<div id="cabecera">
+  <p>NIEVES DON JUAN</p>
 </div>
 
 <script>
-  // Llamar a la función para crear los recuerdos de texto
   crearRecuerdo("litro");
   crearRecuerdo("medio");
-  crearRecuerdo("20");
   crearRecuerdo("15");
   crearRecuerdo("10");
- 
-  
- 
- 
   crearRecuerdo("cono");
 </script>
 
