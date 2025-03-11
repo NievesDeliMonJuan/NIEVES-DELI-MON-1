@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nieves don juan </title>
+  <title>Recuerdos de Texto</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -27,7 +27,7 @@
     }
 
     input[type="text"] {
-      font-size: 22px; /* Aumentar tamaño del texto */
+      font-size: 22px;
       padding: 10px;
       margin: 5px 0;
       width: 90%;
@@ -57,7 +57,7 @@
       border-collapse: collapse;
       width: 90%;
       max-width: 500px;
-      font-size: 22px; /* Tamaño grande para resultados */
+      font-size: 22px;
     }
 
     th, td {
@@ -92,14 +92,14 @@
       var sumaPesos = 0;
       for (var i = 0; i < inputsLlenar.length; i++) {
         var diferencia = parseInt(inputsLlenar[i].value) - parseInt(inputsRegreso[i].value);
-        var pesos = diferencia * (
-          { "10": 10, "15": 15, "medio": 35, "litro": 60, "cono": 15 }[inputsLlenar[i].placeholder.replace("Llenar ", "")] || 0
-        );
+        var precios = { "10": 10, "15": 15, "25": 25, "medio": 35, "litro": 60, "cono": 15 };
+        var nombre = inputsLlenar[i].placeholder.replace("Llenar ", "");
+        var pesos = diferencia * (precios[nombre] || 0);
 
         sumaPesos += pesos;
 
         var fila = tabla.insertRow();
-        [inputsLlenar[i].placeholder.replace("Llenar ", ""), inputsLlenar[i].value, inputsRegreso[i].value, diferencia, pesos]
+        [nombre, inputsLlenar[i].value, inputsRegreso[i].value, diferencia, pesos]
           .forEach(valor => {
             var celda = fila.insertCell();
             celda.textContent = valor;
@@ -123,10 +123,10 @@
       ["Llenar", "Regreso"].forEach(tipo => {
         var input = document.createElement("input");
         input.type = "text";
-        input.placeholder = tipo + " " + nombre;
+        input.placeholder = `${tipo} ${nombre}`;
         input.inputMode = "numeric";
         divContainer.appendChild(input);
-        divContainer.appendChild(document.createElement("br")); // Agrega salto de línea
+        divContainer.appendChild(document.createElement("br"));
       });
 
       document.body.appendChild(divContainer);
@@ -138,7 +138,7 @@
 <div id="cabecera">NIEVES DON JUAN</div>
 
 <script>
-  ["litro", "medio", "15", "10", "cono"].forEach(crearRecuerdo);
+  ["litro", "medio","25", "15", "10" , "cono"].forEach(crearRecuerdo);
 </script>
 
 <button onclick="calcularDiferencias()">Calcular</button>
