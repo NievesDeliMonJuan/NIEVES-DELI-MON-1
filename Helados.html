@@ -1,147 +1,193 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Recuerdos de Texto</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Recuerdos | Compartir</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f8f8f8;
+      margin: 1rem;
+      font-family: monospace;
       text-align: center;
     }
 
     #cabecera {
-      background-color: blue;
-      color: white;
-      font-size: 36px;
+      background: blue;
+      color: #fff;
+      padding: 0.5rem;
       font-weight: bold;
-      padding: 10px;
+      margin-bottom: 1rem;
     }
 
     .contenedor {
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-top: 20px;
+      margin: 0.5rem 0;
     }
 
-    input[type="text"] {
-      font-size: 22px;
-      padding: 10px;
-      margin: 5px 0;
-      width: 90%;
-      max-width: 300px;
+    input {
+      width: 80%;
+      max-width: 200px;
+      margin: 0.25rem 0;
+      padding: 0.25rem;
       text-align: center;
-      border: 2px solid #ccc;
-      border-radius: 5px;
+      font-size: 1rem;
     }
 
     button {
-      font-size: 24px;
-      padding: 12px 20px;
-      background-color: #007BFF;
-      color: white;
+      margin: 0.5rem 0.25rem;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      background: #07f;
+      color: #fff;
       border: none;
-      border-radius: 5px;
+      border-radius: 4px;
       cursor: pointer;
-      margin-top: 10px;
     }
 
-    button:hover {
-      background-color: #0056b3;
+    button#imprimir {
+      display: none;
+    }
+
+    #tableOut {
+      display: none;
+      margin-top: 1rem;
     }
 
     table {
-      margin: 20px auto;
+      margin: auto;
       border-collapse: collapse;
-      width: 90%;
-      max-width: 500px;
-      font-size: 22px;
+      font-family: monospace;
     }
 
     th, td {
-      border: 2px solid black;
-      padding: 10px;
-      text-align: center;
-    }
-
-    th {
-      background-color: #007BFF;
-      color: white;
+      border: 1px solid #000;
+      padding: 0.25rem 0.5rem;
     }
   </style>
-  <script>
-    function calcularDiferencias() {
-      var inputsLlenar = document.querySelectorAll('[placeholder^="Llenar"]');
-      var inputsRegreso = document.querySelectorAll('[placeholder^="Regreso"]');
-
-      var tabla = document.getElementById("tablaDiferencias");
-      if (tabla) tabla.remove();
-
-      tabla = document.createElement("table");
-      tabla.id = "tablaDiferencias";
-
-      var encabezado = tabla.createTHead();
-      var filaEncabezado = encabezado.insertRow();
-      ["Nombre", "Llenar", "Regreso", "Diferencia", "Pesos"].forEach(texto => {
-        var celda = filaEncabezado.insertCell();
-        celda.textContent = texto;
-      });
-
-      var sumaPesos = 0;
-      for (var i = 0; i < inputsLlenar.length; i++) {
-        var diferencia = parseInt(inputsLlenar[i].value) - parseInt(inputsRegreso[i].value);
-        var precios = { "10": 10, "15": 15, "25": 25, "medio": 35, "litro": 60, "cono": 15 };
-        var nombre = inputsLlenar[i].placeholder.replace("Llenar ", "");
-        var pesos = diferencia * (precios[nombre] || 0);
-
-        sumaPesos += pesos;
-
-        var fila = tabla.insertRow();
-        [nombre, inputsLlenar[i].value, inputsRegreso[i].value, diferencia, pesos]
-          .forEach(valor => {
-            var celda = fila.insertCell();
-            celda.textContent = valor;
-          });
-      }
-
-      var filaSuma = tabla.insertRow();
-      var celdaSuma = filaSuma.insertCell();
-      celdaSuma.colSpan = 3;
-      celdaSuma.textContent = "Suma de Pesos:";
-      var celdaTotalPesos = filaSuma.insertCell();
-      celdaTotalPesos.textContent = sumaPesos;
-
-      document.body.appendChild(tabla);
-    }
-
-    function crearRecuerdo(nombre) {
-      var divContainer = document.createElement("div");
-      divContainer.classList.add("contenedor");
-
-      ["Llenar", "Regreso"].forEach(tipo => {
-        var input = document.createElement("input");
-        input.type = "text";
-        input.placeholder = `${tipo} ${nombre}`;
-        input.inputMode = "numeric";
-        divContainer.appendChild(input);
-        divContainer.appendChild(document.createElement("br"));
-      });
-
-      document.body.appendChild(divContainer);
-    }
-  </script>
 </head>
 <body>
 
-<div id="cabecera">NIEVES DON JUAN</div>
+  <div id="cabecera">NIEVES DOÑA BETI</div>
 
-<script>
-  ["litro", "medio","25", "15", "10" , "cono"].forEach(crearRecuerdo);
-</script>
+  <script>
+    const tipos = ["litro","medio","25","15","10","cono"];
+    tipos.forEach(nombre => {
+      const cont = document.createElement("div");
+      cont.className = "contenedor";
+      ["Llenar","Regreso"].forEach(pref => {
+        const inp = document.createElement("input");
+        inp.placeholder = `${pref} ${nombre}`;
+        inp.inputMode = "numeric";
+        cont.appendChild(inp);
+      });
+      document.body.appendChild(cont);
+    });
+  </script>
 
-<button onclick="calcularDiferencias()">Calcular</button>
+  <button id="calcular">Calcular</button>
+  <button id="imprimir">Imprimir</button>
+
+  <div id="tableOut"></div>
+
+  <script>
+    const precios = { litro: 60, medio: 35, 25: 25, 15: 15, 10: 10, cono: 15 };
+    const abrevs  = { litro: "lt", medio: "md", 25: "25", 15: "15", 10: "10", cono: "co" };
+
+    // para texto plano
+    function pad(s, w, align = "r") {
+      s = String(s);
+      if (s.length >= w) return s;
+      const sp = " ".repeat(w - s.length);
+      return align === "r" ? sp + s : s + sp;
+    }
+
+    function recopilarDatos() {
+      const inputs = [...document.querySelectorAll("input")];
+      const Ls = inputs.filter(i => i.placeholder.startsWith("Llenar"));
+      const Rs = inputs.filter(i => i.placeholder.startsWith("Regreso"));
+      const filas = [];
+      let suma = 0;
+
+      Ls.forEach((li, i) => {
+        const tipo = li.placeholder.split(" ")[1];
+        const ab   = abrevs[tipo];
+        const vL   = parseInt(li.value) || 0;
+        const vR   = parseInt(Rs[i].value) || 0;
+        const dif  = vL - vR;
+        const pago = dif * precios[tipo];
+        suma += pago;
+        filas.push({ ab, vL, vR, dif, pago });
+      });
+
+      return { filas, suma };
+    }
+
+    function generarTablaHTML() {
+      const { filas, suma } = recopilarDatos();
+      let html = "<table><thead><tr>"
+               + "<th>N</th><th>L</th><th>R</th><th>D</th><th>P</th>"
+               + "</tr></thead><tbody>";
+      filas.forEach(r => {
+        html += `<tr>
+                   <td>${r.ab}</td>
+                   <td>${r.vL}</td>
+                   <td>${r.vR}</td>
+                   <td>${r.dif}</td>
+                   <td>${r.pago}</td>
+                 </tr>`;
+      });
+      html += `<tr>
+                 <td colspan="4">SP</td>
+                 <td>${suma}</td>
+               </tr>`;
+      html += "</tbody></table>";
+      return html;
+    }
+
+    function generarTablaTexto() {
+      const { filas, suma } = recopilarDatos();
+      const wN = 2, wC = 3, wP = 4, wS = 5;
+      let txt  = "| "+pad("N",wN,"l")+"|"+pad("L",wC)+"|"+pad("R",wC)
+               +"|"+pad("D",wC)+"|"+pad("P",wP)+"|\n";
+      filas.forEach(r => {
+        txt += "| "+pad(r.ab,wN,"l")+"|"+pad(r.vL,wC)
+             +"|"+pad(r.vR,wC)+"|"+pad(r.dif,wC)
+             +"|"+pad(r.pago,wP)+"|\n";
+      });
+      txt += "| "+pad("SP",wN,"l")+"|"+pad("",wC)
+           +"|"+pad("",wC)+"|"+pad("",wC)
+           +"|"+pad(suma,wS)+"|";
+      return txt;
+    }
+
+    document.getElementById("calcular").onclick = () => {
+      const cont = document.getElementById("tableOut");
+      cont.innerHTML = generarTablaHTML();
+      cont.style.display = "block";
+      document.getElementById("imprimir").style.display = "inline-block";
+    };
+
+    document.getElementById("imprimir").onclick = async () => {
+      const txt   = generarTablaTexto();
+      const blob  = new Blob([txt], { type: "text/plain" });
+      const file  = new File([blob], "tabla.txt", { type: "text/plain" });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({ title: "Tabla", files: [file] });
+        } catch {
+          // fallback: mostrar texto
+          alert("No se pudo compartir directamente, se muestra en pantalla.");
+          console.log(txt);
+        }
+      } else {
+        alert("Compartir no soportado, revisa la consola.");
+        console.log(txt);
+      }
+    };
+  </script>
 
 </body>
 </html>
